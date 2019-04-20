@@ -1,10 +1,10 @@
 
 
 from typing import List
-from TK_Types import Board_Type,Pos,Content
+from TK_Types import Pos,Content
 
 class Hunter :
-    def __init__(self,pos: Pos, board : Board_Type, contentType : Content):
+    def __init__(self,pos: Pos, board, contentType : Content):
         """ 
          board : the game structure where the agents are competing
          position : hunter current position
