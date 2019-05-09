@@ -17,11 +17,4 @@ class Keeper(Agent):
         self.chestLocations = chestLocations
         self.numberOfDeadHunters = 0
         self.cellLocations = cellLocations
-
-    def setPosition(self, row :int, col :int):
-        """ method to set the position of the Keeper, the position is setted if and only if
-            is the new position is valid
-            """
-        newPos = Position.make_pos(row, col)
-        if self.board.position_is_valid(newPos):
-            self.position = newPos
+        self.carrying = False

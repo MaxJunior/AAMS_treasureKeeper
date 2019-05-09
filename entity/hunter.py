@@ -1,11 +1,16 @@
 from typing import List
 from tk_types import Pos, Content
-from status import Status
+from status import HunterStatus
 import Exception
+
+HUNTER_DESIRES = {"free": 0, "collect": 1, "flee": 2}
+HUNTER_ACTIONS = {"free": 0, "collect": 1, "moveForward": 2, "rotateLeft": 3,
+                  "rotateRight": 4}
 
 
 class Hunter(Agent):
-    def __init__(self, id, pos: Pos, board, contentType: Content):
+
+    def __init__(self, id, pos: Pos, board, behaviour, contentType: Content):
         """
          board : the game structure where the agents are competing
          position : hunter current position
@@ -14,12 +19,12 @@ class Hunter(Agent):
          huntersPositions : current positions of all the hunters in the game
          isAlive : True, is the hunter numberOfLock is <= 1,otherwise, False
         """
-        super().__init__(pos, board)
+        super().__init__(pos, board, behaviour, HUNTER_DESIRES, HUNTER_ACTIONS)
         self.id = id
         self.timesLocked = 0
         self.treasure = 0.0
         self.huntersPositions = []
-        self.status = Status.ALIVE
+        self.status = HunterStatus.ALIVE
 
     def updateHuntersPositions(self, huntersPos : List[Pos]):
         """set the current positions of the hunter in the board """

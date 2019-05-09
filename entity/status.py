@@ -1,7 +1,7 @@
 from enum import Enum
 
 
-class Status(Enum):
+class HunterStatus(Enum):
     DEAD = 0
     ALIVE = 1
     LOCKED = 2
