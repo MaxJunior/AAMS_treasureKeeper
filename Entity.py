@@ -1,7 +1,5 @@
-
-
 class Entity:
-
-    def __init__(self, position, board):
-        self.position = position
+    """Class that represents entities in Treasure Keeper."""
+    def __init__(self, pos, board):
+        self.pos = pos
         self.board = board
