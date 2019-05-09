@@ -7,7 +7,7 @@ class Board:
     def __init__(self, listPos: Board_Type):
         self.board = listPos
 
-    def get_content(self, pos : Position) -> Content:
+    def get_content(self, pos: Position) -> Content:
         """ Returns the content of the 'pos' entry of the 'board' """
         return self.board[pos[0]][pos[1]]
 
@@ -15,7 +15,7 @@ class Board:
         """Returns the number of lines of the board"""
         return len(self.board)
 
-    def set_content(self, pos: Position, content: Content) -> None :
+    def set_content(self, pos: Position, content: Content) -> None:
         """ Sets the content of the 'pos' entry of the 'board' """
         self.board[pos[0]][pos[1]] = content
 
@@ -25,7 +25,8 @@ class Board:
 
     def pos_is_valid(self, pos: Position) -> bool:
         """Returns True if 'pos' is inside the 'board' limits."""
-        return 0 <= pos[0] < self.board_n_lines() and 0 <= pos[1] < self.board_n_columns()
+        return 0 <= pos[0] < self.board_n_lines() and \
+            0 <= pos[1] < self.board_n_columns()
 
     def print_board(self):
         """ prints the contents of the current board """
