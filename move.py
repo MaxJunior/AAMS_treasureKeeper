@@ -1,4 +1,4 @@
-from TK_Types import Pos, Move
+from tk_types import Pos, Move
 
 
 def make_move(p_initial: Pos, p_final: Pos) -> Move :

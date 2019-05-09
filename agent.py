@@ -1,5 +1,5 @@
 import random
-from Entity import Entity
+from entity import Entity
 from status import Status
 
 NUM_HUNTERS = 4
@@ -15,6 +15,14 @@ class Agent(Entity):
         self.direction = random.choice([0, 1, 2, 3])  # left, up, right, down
         self.chestLocations = []
         self.huntersStatus = [Status.ALIVE for _ in range(NUM_HUNTERS)]
+
+    def setPosition(self, row :int, col :int):
+        """ method to set the position of the Keeper, the position is setted if and only if
+            is the new position is valid
+            """
+        newPos = Position.make_pos(row, col)
+        if self.board.position_is_valid(newPos):
+            self.pos = newPos    
 
     # AGENT DECISION
 

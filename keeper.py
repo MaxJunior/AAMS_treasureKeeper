@@ -1,7 +1,9 @@
-from TK_Types import Pos,Content
-import Position
+from tk_types import Pos, Content
+import position
+from agent import Agent
 
-class Keeper :
+
+class Keeper(Agent):
     def __init__(self, pos: Pos, board, contentType : Content, chestLocations, cellLocations):
         """ 
          board          : the game structure where the agents are competing
@@ -15,14 +17,11 @@ class Keeper :
         self.chestLocations = chestLocations
         self.numberOfDeadHunters = 0
         self.cellLocations = cellLocations
-        
-
 
     def setPosition(self, row :int, col :int):
         """ method to set the position of the Keeper, the position is setted if and only if
             is the new position is valid
             """
-        newPos = Position.make_pos(row,col)
+        newPos = Position.make_pos(row, col)
         if self.board.position_is_valid(newPos):
-            self.position = newPos    
-
+            self.position = newPos

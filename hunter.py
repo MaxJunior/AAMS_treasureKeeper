@@ -1,5 +1,5 @@
 from typing import List
-from TK_Types import Pos, Content
+from tk_types import Pos, Content
 from status import Status
 import Exception
 
