@@ -1,16 +1,17 @@
 from typing import List
 from tk_types import Pos, Content
-from status import HunterStatus
-import Exception
+from .status import HunterStatus
+from .agent import Agent
 
 HUNTER_DESIRES = {"free": 0, "collect": 1, "flee": 2}
 HUNTER_ACTIONS = {"free": 0, "collect": 1, "moveForward": 2, "rotateLeft": 3,
                   "rotateRight": 4}
 
+expl_colors = ["blue", "green", "red", "yellow"]
 
 class Hunter(Agent):
 
-    def __init__(self, id, pos: Pos, board, behaviour, contentType: Content):
+    def __init__(self, id, pos, board):
         """
          board : the game structure where the agents are competing
          position : hunter current position
@@ -19,7 +20,8 @@ class Hunter(Agent):
          huntersPositions : current positions of all the hunters in the game
          isAlive : True, is the hunter numberOfLock is <= 1,otherwise, False
         """
-        super().__init__(pos, board, behaviour, HUNTER_DESIRES, HUNTER_ACTIONS)
+        sprite_fname = f"expl_{expl_colors[id]}.png"
+        super().__init__(pos, board, sprite_fname, HUNTER_DESIRES, HUNTER_ACTIONS)
         self.id = id
         self.timesLocked = 0
         self.treasure = 0.0

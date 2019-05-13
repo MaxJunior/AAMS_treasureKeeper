@@ -1,14 +1,29 @@
 import position
+import pygame
+from entity.jailcell import Jailcell
+from entity.treasure import Treasure
+from entity.keeper import Keeper
+from entity.hunter import Hunter
 from tk_types import Board_Type, Content, Move, Adj, Pos
 
+JAIL_COORDS = [(2, 6), (6, 11), (11, 6), (6, 2)]
+TREASURE_COORDS = [(2, 2), (10, 10), (2, 10), (10, 2), (6, 6)]
+KEEPER_COORDS = (3, 2)
+HUNTER_COORDS = [(10, 4), (11, 5), (11, 1), (10, 0)]
 
 class Board:
 
-    def __init__(self, listPos: Board_Type, entities, gui = None):
-        self.board = listPos
+    def __init__(self, width, gui = None):
+        self.width = width
+        self.board = [[0 for _ in range(width)] for _ in range(width)]
         self.gui = gui
-        self.entities = entities
 
+        self.jailcells = [Jailcell(pos, self) for pos in JAIL_COORDS]
+        self.treasures = [Treasure(pos, self) for pos in TREASURE_COORDS]
+        self.keeper = Keeper(KEEPER_COORDS, self, TREASURE_COORDS, JAIL_COORDS)
+        self.hunters = [Hunter(id, pos, self) for id, pos in enumerate(HUNTER_COORDS)]
+
+        
     def get_content(self, pos: Pos) -> Content:
         """ Returns the content of the 'pos' entry of the 'board' """
         return self.board[pos[0]][pos[1]]
@@ -176,9 +191,26 @@ class Board:
 
         return positions
 
+    def run(self):
+        done = False
+        while(not done):
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    done = True
+            else:
+                self.step()
+
     def displayEntities(self):
-        for entity in self.entities:
+        for entity in self.treasures:
             self.gui.displayEntity(entity)
+        for entity in self.jailcells:
+            self.gui.displayEntity(entity)
+        for entity in self.hunters:
+            self.gui.displayEntity(entity)
+        self.gui.displayEntity(self.keeper)
+    
+    def removeEntities(self):
+        pass
     
     def step(self):
         pass
@@ -188,3 +220,4 @@ class Board:
     
     def associateGUI(self, gui):
         self.gui = gui
+

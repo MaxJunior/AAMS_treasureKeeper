@@ -1,6 +1,6 @@
 import random
-from entity import Entity
-from status import Status
+from .entity import Entity
+from .status import HunterStatus
 import queue
 
 NUM_HUNTERS = 4
@@ -9,14 +9,13 @@ NUM_HUNTERS = 4
 class Agent(Entity):
     """Class that represents agents in Treasure Keeper."""
 
-    def __init__(self, pos, board, behaviour, desires, actions):
-        super().__init__(pos, board)
+    def __init__(self, pos, board, sprite_fname, desires, actions):
+        super().__init__(pos, board, sprite_fname)
         self.pos = pos
         self.board = board
         self.direction = random.choice([0, 1, 2, 3])  # left, up, right, down
         self.chestLocations = []
-        self.huntersStatus = [Status.ALIVE for _ in range(NUM_HUNTERS)]
-        self.behaviour = behaviour
+        self.huntersStatus = [HunterStatus.ALIVE for _ in range(NUM_HUNTERS)]
         self.desires = desires
         self.actions = actions
         self.intention = None

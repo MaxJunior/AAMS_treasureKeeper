@@ -1,10 +1,11 @@
 from tk_types import Pos, Content
 import position
-from agent import Agent
+from .agent import Agent
+from .entity import Entity
 
 
 class Keeper(Agent):
-    def __init__(self, pos: Pos, board, contentType : Content, chestLocations, cellLocations):
+    def __init__(self, pos: Pos, board, chestLocations, cellLocations):
         """ 
          board          : the game structure where the agents are competing
          position       : keeper current position
@@ -12,6 +13,7 @@ class Keeper(Agent):
          cellLocations  : locations where keeper can detains an hunter
 
         """
+        super().__init__(pos, board, "keeper.png", None, None)
         self.board = board
         self.position = pos
         self.chestLocations = chestLocations
