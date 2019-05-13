@@ -4,10 +4,12 @@ from tk_types import Board_Type, Content, Move, Adj, Pos
 
 class Board:
 
-    def __init__(self, listPos: Board_Type):
+    def __init__(self, listPos: Board_Type, entities, gui = None):
         self.board = listPos
+        self.gui = gui
+        self.entities = entities
 
-    def get_content(self, pos: Position) -> Content:
+    def get_content(self, pos: Pos) -> Content:
         """ Returns the content of the 'pos' entry of the 'board' """
         return self.board[pos[0]][pos[1]]
 
@@ -15,7 +17,7 @@ class Board:
         """Returns the number of lines of the board"""
         return len(self.board)
 
-    def set_content(self, pos: Position, content: Content) -> None:
+    def set_content(self, pos: Pos, content: Content) -> None:
         """ Sets the content of the 'pos' entry of the 'board' """
         self.board[pos[0]][pos[1]] = content
 
@@ -23,7 +25,7 @@ class Board:
         """Returns the number of columns of the board"""
         return len(self.board[0])
 
-    def pos_is_valid(self, pos: Position) -> bool:
+    def pos_is_valid(self, pos: Pos) -> bool:
         """Returns True if 'pos' is inside the 'board' limits."""
         return 0 <= pos[0] < self.board_n_lines() and \
             0 <= pos[1] < self.board_n_columns()
@@ -44,7 +46,7 @@ class Board:
 
         for line in range(self.board_n_lines()):
             for column in range(self.board_n_columns()):
-                curr_pos = Position.make_pos(line, column)
+                curr_pos = Pos.make_pos(line, column)
                 if(Content.is_empty(self.get_content(curr_pos))):
                     group.append(curr_pos)
         return group
@@ -65,15 +67,15 @@ class Board:
         def find_valid_move(pos: Pos, adj: Adj) -> Move :
             "Giving an empty content and adj side find if is possible a valid move "
 
-            adj_inner = Position.pos_sum(pos, adj[0])
-            adj_outter = Position.pos_sum(pos, adj[1])
+            adj_inner = Pos.pos_sum(pos, adj[0])
+            adj_outter = Pos.pos_sum(pos, adj[1])
 
             """ a move is valid if is inner and outter adjecent positions are valid and
                 have 'O' as content
             """
-            if ((Position.pos_is_valid(adj_inner, self.board) and
+            if ((Pos.pos_is_valid(adj_inner, self.board) and
                  Content.is_peg(self.get_content(adj_inner))) and
-                (Position.pos_is_valid(adj_outter, self.board) and
+                (Pos.pos_is_valid(adj_outter, self.board) and
                  Content.is_peg(self.get_content(adj_outter)))):
                 return [adj_outter, pos]
 
@@ -98,11 +100,11 @@ class Board:
 
         """ Get the position between the inicial position and the final position  """
 
-        pos1_line = Position.pos_l(pos1)
-        pos1_col = Position.pos_c(pos1)
+        pos1_line = Pos.pos_l(pos1)
+        pos1_col = Pos.pos_c(pos1)
 
-        pos2_line = Position.pos_l(pos2)
-        pos2_col = Position.pos_c(pos2)
+        pos2_line = Pos.pos_l(pos2)
+        pos2_col = Pos.pos_c(pos2)
 
         """ The move its in the  """
         if self.get_values_diff(pos1_line, pos2_line) == 0:
@@ -112,9 +114,10 @@ class Board:
             return (self.get_values_diff(pos1_line, pos2_line), pos1_col)
 
 
-def board_perform_move(self, move: Move) -> Board:
+    def board_perform_move(self, move: Move):
+        pass
 
-    def perform_move(self, move: Move) -> Board:
+    def perform_move(self, move: Move):
         pos_init = move[0]
         pos_final = move[1]
 
@@ -128,16 +131,16 @@ def board_perform_move(self, move: Move) -> Board:
 
         return self.board
 
-    """ Create a deep copy of the board """
-    board_copy = self.board_create_deep_copy()
+        """ Create a deep copy of the board """
+        board_copy = self.board_create_deep_copy()
 
-    """ Check if the move in part of valid moves, if true, perform the move,
-        otherwise, return the board copy"""
-    if move in self.board_moves():
-        return perform_move(board_copy, move)
+        """ Check if the move in part of valid moves, if true, perform the move,
+            otherwise, return the board copy"""
+        if move in self.board_moves():
+            return perform_move(board_copy, move)
 
-    else:
-        return board_copy
+        else:
+            return board_copy
 
     def find_content_type_pos(self, content: Content):
         """ given a board an content type: return a list of positions 
@@ -149,7 +152,7 @@ def board_perform_move(self, move: Move) -> Board:
         
         for line in range(board_lines):
             for column in range(board_columns):
-                curr_pos = Position.make_pos(line, column)
+                curr_pos = Pos.make_pos(line, column)
                 if self.get_content(curr_pos) == content:
                     positions.append(curr_pos)
         return positions
@@ -169,6 +172,19 @@ def board_perform_move(self, move: Move) -> Board:
         columns = range(0, self.board_n_columns())
 
         positions = [(l, c) for l in lines for c in columns
-                     if self.get_content(Position.make_pos(l, c)) == content]
+                     if self.get_content(Pos.make_pos(l, c)) == content]
 
         return positions
+
+    def displayEntities(self):
+        for entity in self.entities:
+            self.gui.displayEntity(entity)
+    
+    def step(self):
+        pass
+    
+    def stop(self):
+        pass
+    
+    def associateGUI(self, gui):
+        self.gui = gui
