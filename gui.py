@@ -12,7 +12,7 @@ WHITE = (255, 255, 255)
 GREEN = (0, 255, 0)
 RED = (255, 0, 0)
 GOLD = (213, 196, 124)
-BROWN = (112, 103, 67)
+BROWN = (56, 39, 15)
 
 GAME_TITLE = "Treasure Keeper"
 
@@ -42,16 +42,36 @@ class GUI:
         pygame.display.set_caption(self.title)
         self.clock = pygame.time.Clock()
         self.screen = pygame.display.set_mode(window_size)
-        self.screen.fill(BROWN)
-        for row in range(self.n_cells):
-            for col in range(self.n_cells):
-                x, y = self.calculate_coord(row, col)
-                pygame.draw.rect(self.screen,
-                                GOLD,
-                                [x,
-                                y,
-                                self.cell_width,
-                                self.cell_width])
+        #self.screen.fill(BROWN)
+        img = pygame.image.load(os.path.join("assets", "ground.jpg"))
+        
+        #+1 for safety
+        for i in range(window_size[0] // 252 + 1):
+            for j in range(window_size[1] // 253 + 1):
+                self.screen.blit(img, (252*i, 253*j))
+
+        for i in range(self.n_cells + 1):
+            hx = 0
+            hy = i * (self.cell_margin + self.cell_width)
+            hx_end = window_size[0]
+            hy_end = hy
+
+            vx = i * (self.cell_margin + self.cell_width) + (self.cell_margin / 2)
+            vy = 0
+            vx_end = vx
+            vy_end = window_size[1]
+
+            pygame.draw.line(self.screen,
+                              BROWN,
+                              (hx, hy),
+                              (hx_end, hy_end),
+                              self.cell_margin)
+
+            pygame.draw.line(self.screen,
+                              BROWN,
+                              (vx, vy),
+                              (vx_end, vy_end),
+                              self.cell_margin)
 
         # Limit to 60 frames per second
         self.clock.tick(60)
@@ -74,7 +94,6 @@ class GUI:
             xoffset = 0
             yoffset = 0
         self.screen.blit(sprite, self.calculate_coord(row, col, xoffset, yoffset))
-
         pygame.display.flip()
 
     def displayEntities(self):
