@@ -1,7 +1,6 @@
 import pygame
 import os
 
-
 from board import Board
 from entity.hunter import Hunter
 # This sets the margin between each cell
@@ -59,9 +58,9 @@ class GUI:
 
         pygame.display.flip()
 
-    def calculate_coord(self, row, col, xoffset=0):
+    def calculate_coord(self, row, col, xoffset=0, yoffset=0):
         x = (self.cell_margin + self.cell_width) * col + self.cell_margin + xoffset
-        y = (self.cell_margin + self.cell_width) * row + self.cell_margin
+        y = (self.cell_margin + self.cell_width) * row + self.cell_margin + yoffset
 
         return x, y
 
@@ -69,10 +68,12 @@ class GUI:
         row, col = entity.pos
         sprite = entity.sprite
         if isinstance(entity, Hunter):
-            xoffset = 5
+            xoffset = 10
+            yoffset = 3
         else:
             xoffset = 0
-        self.screen.blit(sprite, self.calculate_coord(row, col, xoffset))
+            yoffset = 0
+        self.screen.blit(sprite, self.calculate_coord(row, col, xoffset, yoffset))
 
         pygame.display.flip()
 

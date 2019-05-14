@@ -1,19 +1,22 @@
 import random
-from .entity import Entity
-from .status import HunterStatus
+from position import Position
+from entity.entity import Entity
+from entity.status import HunterStatus
 import queue
 
 NUM_HUNTERS = 4
-
 
 class Agent(Entity):
     """Class that represents agents in Treasure Keeper."""
 
     def __init__(self, pos, board, sprite_fname, desires, actions):
+        self.direction = random.choice(["d", "l", "u", "r"])  # left, up, right, down
+        sprite_fname = ".".join(["_".join([sprite_fname, str(self.direction)]), "png"])
+
         super().__init__(pos, board, sprite_fname)
+
         self.pos = pos
         self.board = board
-        self.direction = random.choice([0, 1, 2, 3])  # left, up, right, down
         self.chestLocations = []
         self.huntersStatus = [HunterStatus.ALIVE for _ in range(NUM_HUNTERS)]
         self.desires = desires
@@ -29,13 +32,27 @@ class Agent(Entity):
         if self.board.position_is_valid(newPos):
             self.pos = newPos
 
-    def aheadPosition(self):
-        if self.direction == 0:
-            res = pos_sum(self.pos, make_pos(0, -1))
-        elif self.direction == 1:
-            res = pos_sum(self.pos, make_pos(-1, 0))
-        elif self.direction == 2:
-            res = pos_sum(self.pos, make_pos(0, 1))
-        elif self.direction == 3:
-            res = pos_sum(self.pos, make_pos(1, 0))
+    def is_ahead(self, entity):
+        """Checks if Entity entity is in the cell ahead of the agent."""
+        ahead_pos = self.ahead_position()
+        if not ahead_pos:
+            return False
+        else:
+            return self.board.entity_in_pos(ahead_pos, entity)
+
+    def ahead_position(self):
+        """Return position ahead of the agent depending on the direction it is facing."""
+        if self.direction == "d":
+            res = self.pos + Position(1, 0)
+        elif self.direction == "l":
+            res = self.pos + Position(0, -1)
+        elif self.direction == "u":
+            res = self.pos + Position(-1, 0)
+        elif self.direction == "r":
+            res = self.pos + Position(0, 1)
+
+        if self.board.pos_is_valid(res):
+            return False
+        else:
+            return res
         

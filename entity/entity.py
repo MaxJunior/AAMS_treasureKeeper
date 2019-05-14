@@ -1,6 +1,5 @@
 import pygame
 import os
-
 ASSETS_DIR = "assets"
 class Entity:
     """Class that represents entities in Treasure Keeper."""

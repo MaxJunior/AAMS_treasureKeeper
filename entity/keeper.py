@@ -13,7 +13,7 @@ class Keeper(Agent):
          cellLocations  : locations where keeper can detains an hunter
 
         """
-        super().__init__(pos, board, "keeper.png", None, None)
+        super().__init__(pos, board, "keeper", None, None)
         self.board = board
         self.position = pos
         self.chestLocations = chestLocations

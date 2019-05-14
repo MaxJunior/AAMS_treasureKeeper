@@ -1,5 +1,6 @@
 import position
 import pygame
+from position import Position
 from entity.jailcell import Jailcell
 from entity.treasure import Treasure
 from entity.keeper import Keeper
@@ -40,16 +41,15 @@ class Board:
         """Returns the number of columns of the board"""
         return len(self.board[0])
 
-    def pos_is_valid(self, pos: Pos) -> bool:
-        """Returns True if 'pos' is inside the 'board' limits."""
-        return 0 <= pos[0] < self.board_n_lines() and \
-            0 <= pos[1] < self.board_n_columns()
-
-    def print_board(self):
-        """ prints the contents of the current board """
-
-        for el in self.board:
-            print(el)
+    def pos_is_valid(self, pos):
+        """Returns True if pos is inside the board's limits."""
+        return 0 <= pos.row < self.width and \
+            0 <= pos.col < self.width
+    
+    def entity_in_pos(self, pos, entity):
+        """Check if Entity entity is in board Position pos."""
+        row = pos.row; col = pos.col
+        return self.board[row][col] == entity
 
     def board_create_deep_copy(self):
         """Returns a deep copy of the board"""
