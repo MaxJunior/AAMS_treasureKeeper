@@ -6,10 +6,10 @@ from entity.keeper import Keeper
 from entity.hunter import Hunter
 from tk_types import Board_Type, Content, Move, Adj, Pos
 
-JAIL_COORDS = [(2, 6), (6, 11), (11, 6), (6, 2)]
-TREASURE_COORDS = [(2, 2), (10, 10), (2, 10), (10, 2), (6, 6)]
+JAIL_COORDS = [(1, 5), (5, 10), (10, 5), (5, 1)]
+TREASURE_COORDS = [(2, 1), (10, 9), (2, 9), (10, 1), (6, 5)]
 KEEPER_COORDS = (3, 2)
-HUNTER_COORDS = [(10, 4), (11, 5), (11, 1), (10, 0)]
+HUNTER_COORDS = [(7, 0), (10, 6), (1, 11), (0, 10)]
 
 class Board:
 

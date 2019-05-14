@@ -3,6 +3,7 @@ import os
 
 
 from board import Board
+from entity.hunter import Hunter
 # This sets the margin between each cell
 MARGIN = 3
 
@@ -11,7 +12,8 @@ BLACK = (30, 37, 48)
 WHITE = (255, 255, 255)
 GREEN = (0, 255, 0)
 RED = (255, 0, 0)
-GOLD = (216, 179, 78)
+GOLD = (213, 196, 124)
+BROWN = (112, 103, 67)
 
 GAME_TITLE = "Treasure Keeper"
 
@@ -30,9 +32,7 @@ class GUI:
 
         self.board = Board(n_cells, self)
         self.displayBoard()
-        print("nam")
         self.board.displayEntities()
-        print("o clock")
         self.board.run()
 
     def displayBoard(self):
@@ -43,12 +43,12 @@ class GUI:
         pygame.display.set_caption(self.title)
         self.clock = pygame.time.Clock()
         self.screen = pygame.display.set_mode(window_size)
-        self.screen.fill(BLACK)
+        self.screen.fill(BROWN)
         for row in range(self.n_cells):
             for col in range(self.n_cells):
                 x, y = self.calculate_coord(row, col)
                 pygame.draw.rect(self.screen,
-                                WHITE,
+                                GOLD,
                                 [x,
                                 y,
                                 self.cell_width,
@@ -59,17 +59,21 @@ class GUI:
 
         pygame.display.flip()
 
-    def calculate_coord(self, row, col):
-        x = (self.cell_margin + self.cell_width) * col + self.cell_margin
+    def calculate_coord(self, row, col, xoffset=0):
+        x = (self.cell_margin + self.cell_width) * col + self.cell_margin + xoffset
         y = (self.cell_margin + self.cell_width) * row + self.cell_margin
 
         return x, y
 
     def displayEntity(self, entity):
-        print("DISPLAYING ENTITY", entity)
         row, col = entity.pos
         sprite = entity.sprite
-        self.screen.blit(sprite, self.calculate_coord(row, col))
+        if isinstance(entity, Hunter):
+            xoffset = 5
+        else:
+            xoffset = 0
+        self.screen.blit(sprite, self.calculate_coord(row, col, xoffset))
+
         pygame.display.flip()
 
     def displayEntities(self):
