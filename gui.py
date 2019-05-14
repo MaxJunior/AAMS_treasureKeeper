@@ -3,6 +3,7 @@ import os
 
 from board import Board
 from entity.hunter import Hunter
+from entity.treasure import Treasure
 # This sets the margin between each cell
 MARGIN = 3
 
@@ -45,20 +46,17 @@ class GUI:
         #self.screen.fill(BROWN)
         img = pygame.image.load(os.path.join("assets", "ground.jpg"))
         
-        #+1 for safety
+        #draw floor texture, +1 for safety
         for i in range(window_size[0] // 252 + 1):
             for j in range(window_size[1] // 253 + 1):
                 self.screen.blit(img, (252*i, 253*j))
 
+        #draw grid lines
         for i in range(self.n_cells + 1):
-            hx = 0
-            hy = i * (self.cell_margin + self.cell_width)
+            hx = vy = 0
+            vx = hy = i * (self.cell_margin + self.cell_width) + (self.cell_margin / 2)
             hx_end = window_size[0]
-            hy_end = hy
-
-            vx = i * (self.cell_margin + self.cell_width) + (self.cell_margin / 2)
-            vy = 0
-            vx_end = vx
+            hy_end = vx_end = hy
             vy_end = window_size[1]
 
             pygame.draw.line(self.screen,
@@ -75,7 +73,6 @@ class GUI:
 
         # Limit to 60 frames per second
         self.clock.tick(60)
-
         pygame.display.flip()
 
     def calculate_coord(self, row, col, xoffset=0, yoffset=0):
@@ -90,9 +87,13 @@ class GUI:
         if isinstance(entity, Hunter):
             xoffset = 10
             yoffset = 3
+        elif isinstance(entity, Treasure):
+            xoffset = 3
+            yoffset = 4
         else:
             xoffset = 0
             yoffset = 0
+
         self.screen.blit(sprite, self.calculate_coord(row, col, xoffset, yoffset))
         pygame.display.flip()
 
