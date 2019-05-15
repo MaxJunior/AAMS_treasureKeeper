@@ -1,4 +1,7 @@
 import pygame
+
+from .position import Position
+
 from .entity.jailcell import Jailcell
 from .entity.treasure import Treasure
 from .entity.keeper import Keeper
@@ -9,9 +12,10 @@ TREASURE_COORDS = [(2, 1), (10, 9), (2, 9), (10, 1), (6, 5)]
 KEEPER_COORDS = (3, 2)
 HUNTER_COORDS = [(7, 0), (10, 6), (1, 11), (0, 10)]
 
+
 class Board:
 
-    def __init__(self, width, gui = None):
+    def __init__(self, width, gui=None):
         self.width = width
         self.board = [[0 for _ in range(width)] for _ in range(width)]
         self.gui = gui
@@ -19,10 +23,9 @@ class Board:
         self.jailcells = [Jailcell(pos, self) for pos in JAIL_COORDS]
         self.treasures = [Treasure(pos, self) for pos in TREASURE_COORDS]
         self.keeper = Keeper(KEEPER_COORDS, self, TREASURE_COORDS, JAIL_COORDS)
-        self.hunters = [Hunter(id, pos, self) for id, pos in enumerate(HUNTER_COORDS)]
+        self.hunters = [Hunter(id, pos, self)
+                        for id, pos in enumerate(HUNTER_COORDS)]
 
-        
-    
     def get_content(self, pos):
         """ Returns the content of the 'pos' entry of the 'board' """
         return self.board[pos[0]][pos[1]]
@@ -54,18 +57,29 @@ class Board:
 
     def entity_in_pos(self, pos, entity):
         """Check if Entity entity is in board Position pos."""
-        row = pos.row; col = pos.col
+        row = pos.row
+        col = pos.col
         return self.board[row][col] == entity
-    
-    def set_agent_position(self, agent, row, col):
+
+    def pos_occupied_hunter(self, pos):
+        """Check if pos is occupied by a Hunter."""
+        row = pos.row
+        col = pos.col
+
+        cell = self.board[row][col]
+        return (cell != 0 and isinstance(cell, Hunter))
+
+    def set_agent_position(self, agent, new_pos):
         """Set the position of an Agent agent."""
-        new_pos = Position(row, col)
         if self.position_is_valid(new_pos) and self.position_is_free(new_pos):
             agent.pos = new_pos
-            self.board
+
+            new_row = new_pos.row
+            new_col = new_pos.col
+            self.board[new_row][new_col] = agent
         else:
             raise Exception(f"Invalid position ({new_pos.row}, {new_pos.col}.")
-    
+
     def board_create_deep_copy(self):
         """Returns a deep copy of the board"""
         return [line[:] for line in self.board]
@@ -80,7 +94,21 @@ class Board:
                # if(Content.is_empty(self.get_content(curr_pos))):
                 #    group.append(curr_pos)
         return group
-    
+
+    def agents_in_treasure(self, treasure):
+        """Get the number of agents collecting a Treasure."""
+        t_row = treasure.pos.row
+        t_col = treasure.pos.col
+        aux = (Position(1, 0), Position(0, 1), (-1, 0), (0, -1))
+        adjacent = [Position(t_row + row, t_col + col) for (row, col) in aux
+                    if position_is_valid(Position(t_row + row, t_col + col))]
+
+        count = 0
+        for pos in adjacent:
+            if self.pos_occupied_hunter(pos):
+                count += 1
+        return count
+
     """ TO FIXME :  """
     def board_moves(self):
         """ find all valid moves in the board """
@@ -120,7 +148,7 @@ class Board:
 
         return moves
 
-    def get_values_diff(val1: int, val2: int) -> int :
+    def get_values_diff(val1, val2):
 
         if val1 - val2 == 0:
             return 0

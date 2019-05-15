@@ -2,6 +2,8 @@ import pygame
 import os
 
 from .entity import Entity
+
+
 class Jailcell(Entity):
 
     def __init__(self, pos, board):

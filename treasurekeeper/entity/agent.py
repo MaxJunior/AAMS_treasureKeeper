@@ -3,15 +3,20 @@ import queue
 
 from .entity import Entity
 from ..globals import HunterStatus
+from ..position import Position
 
 NUM_HUNTERS = 4
+
 
 class Agent(Entity):
     """Class that represents agents in Treasure Keeper."""
 
     def __init__(self, pos, board, sprite_fname, desires, actions):
-        self.direction = random.choice(["d", "l", "u", "r"])  # left, up, right, down
-        sprite_fname = ".".join(["_".join([sprite_fname, str(self.direction)]), "png"])
+        # left, up, right, down
+        self.direction = random.choice(["d", "l", "u", "r"])
+        sprite_fname = ".".join(["_".join([sprite_fname,
+                                           str(self.direction)]),
+                                "png"])
 
         super().__init__(pos, board, sprite_fname)
 
@@ -24,7 +29,6 @@ class Agent(Entity):
         self.intention = None
         self.plan = queue.Queue()
 
-
     def is_ahead(self, entity):
         """Checks if Entity entity is in the cell ahead of the agent."""
         ahead_pos = self.ahead_position()
@@ -34,7 +38,7 @@ class Agent(Entity):
             return self.board.entity_in_pos(ahead_pos, entity)
 
     def ahead_position(self):
-        """Return position ahead of the agent depending on the direction it is facing."""
+        """Return position ahead of the agent depending on it's direction."""
         if self.direction == "d":
             res = self.pos + Position(1, 0)
         elif self.direction == "l":
@@ -48,4 +52,11 @@ class Agent(Entity):
             return False
         else:
             return res
-        
+
+    def move_forward(self):
+        ahead = self.ahead_position()
+        if ahead:
+            self.board.set_agent_position(self, ahead)
+            return True
+        else:
+            return False

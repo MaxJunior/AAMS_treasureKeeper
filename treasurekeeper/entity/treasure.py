@@ -1,9 +1,9 @@
 import pygame
 import os
 
-from ..globals import ASSETS_DIR, ChestStatus
 from .entity import Entity
 
+from ..globals import ASSETS_DIR, ChestStatus, EMPTY_BONUS
 
 
 class Treasure(Entity):
@@ -19,7 +19,7 @@ class Treasure(Entity):
             self.gold = 0
             self.status = ChestStatus.EMPTY
             sprite_fname = "treasure_empty.png"
-            res = self.gold
+            res = self.gold + EMPTY_BONUS
         else:
             self.gold = self.gold - amount
             self.status = ChestStatus.OPEN

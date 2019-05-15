@@ -6,4 +6,3 @@ class Position:
 
     def __add__(self, other):
         return Position(self.row + other.row, self.col + other.col)
-        

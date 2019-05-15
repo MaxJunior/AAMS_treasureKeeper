@@ -2,12 +2,11 @@ import random
 
 from .agent import Agent
 from .entity import Entity
-from ..globals import EXPL_COLORS, HunterStatus
+from ..globals import EXPL_COLORS, HunterStatus, COLLECT_AMOUNTS
 
 HUNTER_DESIRES = {"free": 0, "collect": 1, "flee": 2}
-HUNTER_ACTIONS = {"free": 0, "collect": 1, "moveForward": 2, "rotateLeft": 3,
-                  "rotateRight": 4}
-
+HUNTER_ACTIONS = {"free": 0, "collect": 1, "move_forward": 2, "rotate_left": 3,
+                  "rotate_right": 4}
 
 
 class Hunter(Agent):
@@ -22,21 +21,21 @@ class Hunter(Agent):
          isAlive : True, is the hunter numberOfLock is <= 1,otherwise, False
         """
         sprite_fname = f"expl_{EXPL_COLORS[id]}"
-        super().__init__(pos, board, sprite_fname, HUNTER_DESIRES, HUNTER_ACTIONS)
+        super().__init__(pos, board, sprite_fname, HUNTER_DESIRES,
+                         HUNTER_ACTIONS)
         self.id = id
         self.timesLocked = 0
-        self.treasure = 0.0
+        self.gold = 0.0
         self.huntersPositions = []
         self.status = HunterStatus.ALIVE
 
-    
     def free(self, jailcell):
         """Frees a locked hunter from Jailcell jailcell."""
         if self.is_ahead(jailcell) and (jailcell.prisoner is not None):
             jailcell.prisoner.escape(self, jailcell)
             aux = random.choice([-1, 1])
-            #change the hunter's direction according to the new position so 
-            #it always looks to the freed hunter.
+            # change the hunter's direction according to the new position so
+            # it always looks to the freed hunter.
             if self.direction in ("u", "d"):
                 if aux == -1:
                     self.direction = "r"
@@ -53,8 +52,9 @@ class Hunter(Agent):
                 new_col = self.col
             self.board.set_agent_position(self, new_row, new_col)
         else:
-            raise Exception("Hunter " + str(self.id) + " can't to free an empty Jailcell.")
-    
+            raise Exception(f"Hunter {str(self.id)} can't \
+                            free an empty Jailcell.")
+
     def escape(self, freer, jailcell):
         """Escape Jailcell jailcell, changing the position and status."""
         jailcell.release_prisoner()
@@ -62,8 +62,14 @@ class Hunter(Agent):
 
     def collect(self, treasure):
         """Collect gold from a treasure chest."""
-        pass
+        n_agents = self.board.agents_in_treasure(treasure)
+        if 1 <= n_agents <= 4:
+            amount = COLLECT_AMOUNTS[n_agents - 1]
+        else:
+            raise Exception(f"Invalid number of agents \
+                            collecting: {n_agents}.")
 
+        self.gold += treasure.remove_gold(amount)
 
     def updateHuntersPositions(self, huntersPos):
         """set the current positions of the hunter in the board """
@@ -92,10 +98,11 @@ class Hunter(Agent):
         """ This method will retrive all the valid adjacents positions of the hunter in 1 radius """
         pass
 
-    def  keeperIsInAdjacentPositions(self) -> bool :
+    def  keeperIsInAdjacentPositions(self):
         """  method to check if keeper is in adjacentPositions """
         pass
 
-    def move(self):
-        """ method responsable for the hunter movement in the board"""
-        pass
+    def move_forward(self):
+        """Move hunter to the position it is facing."""
+        
+        
