@@ -1,9 +1,12 @@
 import pygame
 import os
 
-from board import Board
-from entity.hunter import Hunter
-from entity.treasure import Treasure
+from .board import Board
+from .entity.hunter import Hunter
+from .entity.treasure import Treasure
+
+from .globals import GAME_TITLE, ASSETS_DIR
+
 # This sets the margin between each cell
 MARGIN = 3
 
@@ -15,7 +18,7 @@ RED = (255, 0, 0)
 GOLD = (213, 196, 124)
 BROWN = (56, 39, 15)
 
-GAME_TITLE = "Treasure Keeper"
+
 
 # This sets the WIDTH and HEIGHT of each grid location
 WIDTH = HEIGHT = 35
@@ -44,7 +47,7 @@ class GUI:
         self.clock = pygame.time.Clock()
         self.screen = pygame.display.set_mode(window_size)
         #self.screen.fill(BROWN)
-        img = pygame.image.load(os.path.join("assets", "ground.jpg"))
+        img = pygame.image.load(os.path.join(ASSETS_DIR, "ground.jpg"))
         
         #draw floor texture, +1 for safety
         for i in range(window_size[0] // 252 + 1):

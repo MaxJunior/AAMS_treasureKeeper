@@ -1,8 +1,8 @@
 import random
-from position import Position
-from entity.entity import Entity
-from entity.status import HunterStatus
 import queue
+
+from .entity import Entity
+from ..globals import HunterStatus
 
 NUM_HUNTERS = 4
 
@@ -24,13 +24,6 @@ class Agent(Entity):
         self.intention = None
         self.plan = queue.Queue()
 
-    def setPosition(self, row :int, col :int):
-        """ method to set the position of the Keeper, the position is setted if and only if
-            is the new position is valid
-            """
-        newPos = Position.make_pos(row, col)
-        if self.board.position_is_valid(newPos):
-            self.pos = newPos
 
     def is_ahead(self, entity):
         """Checks if Entity entity is in the cell ahead of the agent."""
