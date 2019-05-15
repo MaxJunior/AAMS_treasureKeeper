@@ -26,8 +26,43 @@ class Hunter(Agent):
         self.id = id
         self.times_locked = 0
         self.gold = 0.0
-        self.huntersPositions = []
+        self.hunter_positions = []
         self.status = HunterStatus.ALIVE
+        self.danger = 0
+
+    def updateHuntersPositions(self, huntersPos):
+        """set the current positions of the hunter in the board """
+        self.huntersPositions = huntersPos
+
+    def set_status(self, status):
+        """Set the hunter's status."""
+        self.status = status
+
+    def update_times_locked(self):
+        """Update the times the hunter has been locked."""
+        if self.timesLocked == 0:
+            self.timesLocked = 1
+        elif self.timesLocked == 1:
+            self.timesLocked = 2
+            self.set_status(HunterStatus.DEAD)
+        else:
+            raise Exception(f"Invalid lock on hunter {self.id}.")
+
+    def get_color(self):
+        """Get the hunter's color."""
+        return EXPL_COLORS[self.id]
+
+    ###########
+    # sensors #
+    ###########
+
+    def check_danger(self):
+        """Check if keeper is in vicinity, updating danger."""
+        pass
+
+    #############
+    # actuators #
+    #############
 
     def free(self, jailcell):
         """Frees a locked hunter from Jailcell jailcell."""
@@ -71,28 +106,6 @@ class Hunter(Agent):
 
         self.gold += treasure.remove_gold(amount)
 
-    def updateHuntersPositions(self, huntersPos):
-        """set the current positions of the hunter in the board """
-        self.huntersPositions = huntersPos
-
-    def set_status(self, status):
-        """Set the hunter's status."""
-        self.status = status
-
-    def update_times_locked(self):
-        """Update the times the hunter has been locked."""
-        if self.timesLocked == 0:
-            self.timesLocked = 1
-        elif self.timesLocked == 1:
-            self.timesLocked = 2
-            self.set_status(HunterStatus.DEAD)
-        else:
-            raise Exception(f"Invalid lock on hunter {self.id}.")
-
-    def get_color(self):
-        """Get the hunter's color."""
-        return EXPL_COLORS[self.id]
-
     def rotate_left(self):
         """Rotate hunter to the left."""
         name = f"expl_{self.get_color()}"
@@ -103,16 +116,11 @@ class Hunter(Agent):
         name = f"expl_{self.get_color()}"
         super().rotate_right(name)
 
+
     """ TO FIXME  """
     def getAdjacentsPositions(self):
         """ This method will retrive all the valid adjacents positions of the hunter in 1 radius """
         pass
 
-    def  keeperIsInAdjacentPositions(self):
-        """  method to check if keeper is in adjacentPositions """
-        pass
-
     def move_forward(self):
         """Move hunter to the position it is facing."""
-        
-

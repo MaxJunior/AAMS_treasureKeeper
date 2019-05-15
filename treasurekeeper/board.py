@@ -28,19 +28,15 @@ class Board:
 
     def get_content(self, pos):
         """ Returns the content of the 'pos' entry of the 'board' """
-        return self.board[pos[0]][pos[1]]
-
-    def board_n_lines(self):
-        """Returns the number of lines of the board"""
-        return len(self.board)
+        return self.board[pos.row][pos.col]
 
     def set_content(self, pos, content):
-        """ Sets the content of the 'pos' entry of the 'board' """
-        self.board[pos[0]][pos[1]] = content
+        """Sets the content of the 'pos' entry of the 'board' """
+        self.board[pos.row][pos.col] = content
 
-    def board_n_columns(self) -> int:
-        """Returns the number of columns of the board"""
-        return len(self.board[0])
+    def board_width(self):
+        """Get the board's width."""
+        return self.width
 
     ############################
     # position-related methods #
