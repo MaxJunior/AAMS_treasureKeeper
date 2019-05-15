@@ -5,7 +5,7 @@ from ..position import Position
 from ..globals import EXPL_COLORS, HunterStatus
 
 KEEPER_DESIRES = {"grab": 0, "lock": 1}
-HUNTER_ACTIONS = {"grab": 0, "lock": 1, "move_forward": 2, "rotate_left": 3,
+KEEPER_ACTIONS = {"grab": 0, "lock": 1, "move_forward": 2, "rotate_left": 3,
                   "rotate_right": 4}
 
 
