@@ -32,8 +32,8 @@ class Keeper(Agent):
             self.carrying = hunter
             # change sprite
             hunter_color = EXPL_COLORS[hunter.id]
-            sprite_fname = f"keeper_{self.dir}_\
-                             expl_{self.dir}_{hunter_color}.png"
+            sprite_fname = f"keeper_expl_{self.dir}_\
+                             {hunter_color}_{self.dir}.png"
             self.set_sprite(sprite_fname)
             # update the hunter's status
             self.board.set_agent_position(hunter, self.pos)
@@ -57,3 +57,17 @@ class Keeper(Agent):
                 raise Exception("Jailcell not ahead of the keeper.")
         else:
             raise Exception("Keeper isn't carrying a hunter.")
+
+    def rotate_left(self):
+        """Rotate keeper to the left."""
+        name = "keeper"
+        if self.carrying is not None:
+            name = "_".join([name, f"_expl_{self.carrying.get_color()}"])
+        super().rotate_left(name)
+
+    def rotate_right(self):
+        """Rotate keeper to the right."""
+        name = "keeper"
+        if self.carrying is not None:
+            name = "_".join([name, f"_expl_{self.carrying.get_color()}"])
+        super().rotate_right(name)

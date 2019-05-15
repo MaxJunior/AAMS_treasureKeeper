@@ -63,7 +63,7 @@ class Agent(Entity):
         else:
             return False
 
-    def rotate_left(self):
+    def rotate_left(self, agent_name):
         """Rotate the agent's facing direction to the left."""
         curr_dir_idx = DIRECTIONS.index(self.direction)
         if curr_dir_idx == 3:
@@ -71,8 +71,10 @@ class Agent(Entity):
         else:
             new_dir_idx = curr_dir_idx + 1
         self.dir = DIRECTIONS[new_dir_idx]
+        sprite_fname = "_".join([agent_name, str(self.dir), ".png"])
+        self.set_sprite(sprite_fname)
 
-    def rotate_right(self):
+    def rotate_right(self, agent_name):
         """Rotate the agent's facing direction to the right."""
         curr_dir_idx = DIRECTIONS.index(self.direction)
         if curr_dir_idx == 0:
@@ -80,3 +82,5 @@ class Agent(Entity):
         else:
             new_dir_idx = curr_dir_idx - 1
         self.dir = DIRECTIONS[new_dir_idx]
+        sprite_fname = "_".join([agent_name, str(self.dir), ".png"])
+        self.set_sprite(sprite_fname)

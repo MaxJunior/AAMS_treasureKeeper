@@ -89,6 +89,20 @@ class Hunter(Agent):
         else:
             raise Exception(f"Invalid lock on hunter {self.id}.")
 
+    def get_color(self):
+        """Get the hunter's color."""
+        return EXPL_COLORS[self.id]
+
+    def rotate_left(self):
+        """Rotate hunter to the left."""
+        name = f"expl_{self.get_color()}"
+        super().rotate_left(name)
+
+    def rotate_right(self):
+        """Rotate hunter to the right."""
+        name = f"expl_{self.get_color()}"
+        super().rotate_right(name)
+
     """ TO FIXME  """
     def getAdjacentsPositions(self):
         """ This method will retrive all the valid adjacents positions of the hunter in 1 radius """
