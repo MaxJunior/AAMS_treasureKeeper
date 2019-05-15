@@ -84,3 +84,20 @@ class Agent(Entity):
         self.dir = DIRECTIONS[new_dir_idx]
         sprite_fname = "_".join([agent_name, str(self.dir), ".png"])
         self.set_sprite(sprite_fname)
+
+    def look_fov(self, depth):
+        """Look in a cone (FOV) in front of the agent."""
+        seed = self.ahead_position()
+        pos_fov = [seed]
+        """
+        for d in range(2, depth + 1):
+            if self.direction == "d":
+                for i in range(-i )
+                res = self.pos + Position(1, 0)
+            elif self.direction == "l":
+                res = self.pos + Position(0, -1)
+            elif self.direction == "u":
+                res = self.pos + Position(-1, 0)
+            elif self.direction == "r":
+                res = self.pos + Position(0, 1)
+                """

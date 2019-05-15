@@ -1,4 +1,5 @@
 import random
+import itertools
 
 from .agent import Agent
 from .entity import Entity
@@ -58,7 +59,17 @@ class Hunter(Agent):
 
     def check_danger(self):
         """Check if keeper is in vicinity, updating danger."""
-        pass
+        for i in range(1, 4):
+            aux_sums = [Position(row, col) for (row, col)
+                        in list(itertools.product([-i, 0, i], repeat=2))
+                        if (row, col) != (0, 0) and
+                        self.board.position_is_valid(Position(row, col))]
+
+            new_pos = [(self.pos + pos) for pos in aux_sums]
+            for pos in new_pos:
+                if self.board.pos_occupied_keeper(pos):
+                    self.danger = 4 - i
+                    return
 
     #############
     # actuators #

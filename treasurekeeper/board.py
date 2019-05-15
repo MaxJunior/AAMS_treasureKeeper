@@ -63,7 +63,15 @@ class Board:
         col = pos.col
 
         cell = self.board[row][col]
-        return (cell != 0 and isinstance(cell, Hunter))
+        return isinstance(cell, Hunter)
+
+    def pos_occupied_keeper(self, pos):
+        """Check if pos is occupied by the Keeper."""
+        row = pos.row
+        col = pos.col
+
+        cell = self.board[row][col]
+        return cell == self.keeper
 
     def set_agent_position(self, agent, new_pos):
         """Set the position of an Agent agent."""
