@@ -24,7 +24,7 @@ class Hunter(Agent):
         super().__init__(pos, board, sprite_fname, HUNTER_DESIRES,
                          HUNTER_ACTIONS)
         self.id = id
-        self.timesLocked = 0
+        self.times_locked = 0
         self.gold = 0.0
         self.huntersPositions = []
         self.status = HunterStatus.ALIVE
@@ -75,23 +75,19 @@ class Hunter(Agent):
         """set the current positions of the hunter in the board """
         self.huntersPositions = huntersPos
 
-    def setStatus(self, status):
-        """ checks if the hunter is alive, i.e. was locked 2 times by the hunter"""
+    def set_status(self, status):
+        """Set the hunter's status."""
         self.status = status
 
-    def updateTimesLocked(self):
-        """Updated when a hunter is locked by the keeper:
-           case 0 : locked by the first time
-           case 1 : second time is been locked , is this case the hunter is dead
-           Otherwise : do nothing 
-         """
+    def update_times_locked(self):
+        """Update the times the hunter has been locked."""
         if self.timesLocked == 0:
             self.timesLocked = 1
         elif self.timesLocked == 1:
             self.timesLocked = 2
-            self.setStatus(HunterStatus.DEAD)
+            self.set_status(HunterStatus.DEAD)
         else:
-            raise Exception(f"Invalid lock in hunter {self.id}.")
+            raise Exception(f"Invalid lock on hunter {self.id}.")
 
     """ TO FIXME  """
     def getAdjacentsPositions(self):
@@ -105,4 +101,4 @@ class Hunter(Agent):
     def move_forward(self):
         """Move hunter to the position it is facing."""
         
-        
+
