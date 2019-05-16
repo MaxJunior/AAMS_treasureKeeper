@@ -84,6 +84,17 @@ class Board:
         else:
             raise Exception(f"Invalid position ({new_pos.row}, {new_pos.col}.")
 
+    def adjacent_positions(self, pos):
+        """Returns the adjacent positions (no diagonals)."""
+        t_row = treasure.pos.row
+        t_col = treasure.pos.col
+
+        aux = (Position(1, 0), Position(0, 1), (-1, 0), (0, -1))
+        adjacent = [Position(t_row + row, t_col + col) for (row, col) in aux
+                    if position_is_valid(Position(t_row + row, t_col + col))]
+
+        return adjacent
+
     def board_create_deep_copy(self):
         """Returns a deep copy of the board"""
         return [line[:] for line in self.board]
@@ -101,11 +112,7 @@ class Board:
 
     def agents_in_treasure(self, treasure):
         """Get the number of agents collecting a Treasure."""
-        t_row = treasure.pos.row
-        t_col = treasure.pos.col
-        aux = (Position(1, 0), Position(0, 1), (-1, 0), (0, -1))
-        adjacent = [Position(t_row + row, t_col + col) for (row, col) in aux
-                    if position_is_valid(Position(t_row + row, t_col + col))]
+        adjacent = self.adjacent_positions(treasure.pos)
 
         count = 0
         for pos in adjacent:

@@ -2,8 +2,13 @@ import random
 import queue
 
 from .entity import Entity
+
 from ..globals import HunterStatus
 from ..position import Position
+
+from ..search.strategy import DFS
+from ..search.node import Node
+from ..search.problem import Problem
 
 NUM_HUNTERS = 4
 DIRECTIONS = ["d", "l", "u", "r"]
@@ -29,6 +34,29 @@ class Agent(Entity):
         self.actions = actions
         self.intention = None
         self.plan = queue.Queue()
+
+    def find_path(self, pos):
+        """Find the path to a position in the board."""
+        state0 = Node(self.pos, None)
+
+        def equals(node1, node2):
+            return node1.state.row == node2.row and \
+                   node1.state.col == node2.col
+
+        def is_goal(node):
+            return equals(node, Node(pos))
+
+        def operator(node):
+            adjacent = self.board.adjacent_positions(node.state)
+            return [Node(adj_pos, node) for adj_pos in adjacent]
+
+        problem = Problem(state0, operator, is_goal, equals)
+
+        return DFS(problem)
+
+    ###########
+    # sensors #
+    ###########
 
     def is_ahead(self, entity):
         """Checks if Entity entity is in the cell ahead of the agent."""
@@ -62,6 +90,28 @@ class Agent(Entity):
             return True
         else:
             return False
+    
+    def look_fov(self, depth):
+        """Look in a cone (FOV) in front of the agent."""
+        seed = self.ahead_position()
+        pos_fov = [seed]
+
+        for d in range(depth):
+            if self.direction == "d" or self.direction == "u":
+                for i in range(-i, i + 1):
+                    aux_pos = Position(seed.row + d, seed.col + i)
+                    if self.board.position_is_valid(aux_pos):
+                        pos_fov.append()
+            elif self.direction == "l" or self.direction == "r":
+                for i in range(-i, i + 1):
+                    aux_pos = Position(seed.row + i, seed.col + d)
+                    if self.board.position_is_valid(aux_pos):
+                        pos_fov.append()
+        return pos_fov
+
+    #############
+    # actuators #
+    #############
 
     def rotate_left(self, agent_name):
         """Rotate the agent's facing direction to the left."""
@@ -85,19 +135,6 @@ class Agent(Entity):
         sprite_fname = "_".join([agent_name, str(self.dir), ".png"])
         self.set_sprite(sprite_fname)
 
-    def look_fov(self, depth):
-        """Look in a cone (FOV) in front of the agent."""
-        seed = self.ahead_position()
-        pos_fov = [seed]
-        """
-        for d in range(2, depth + 1):
-            if self.direction == "d":
-                for i in range(-i )
-                res = self.pos + Position(1, 0)
-            elif self.direction == "l":
-                res = self.pos + Position(0, -1)
-            elif self.direction == "u":
-                res = self.pos + Position(-1, 0)
-            elif self.direction == "r":
-                res = self.pos + Position(0, 1)
-                """
+    
+
+
