@@ -6,3 +6,6 @@ class Position:
 
     def __add__(self, other):
         return Position(self.row + other.row, self.col + other.col)
+
+    def __eq__(self, other):
+        return self.row == other.row and self.col == other.col
