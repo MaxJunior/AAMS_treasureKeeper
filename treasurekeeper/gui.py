@@ -15,13 +15,15 @@ BLACK = (30, 37, 48)
 WHITE = (255, 255, 255)
 GREEN = (0, 255, 0)
 RED = (255, 0, 0)
+BLUE = (0, 0, 255)
+YELLOW = (255, 255, 0)
 GOLD = (213, 196, 124)
 BROWN = (56, 39, 15)
 
 
-
 # This sets the WIDTH and HEIGHT of each grid location
 WIDTH = HEIGHT = 35
+
 
 class GUI:
 
@@ -85,7 +87,7 @@ class GUI:
         return x, y
 
     def displayEntity(self, entity):
-        row, col = entity.pos
+        row, col = entity.pos.row, entity.pos.col
         sprite = entity.sprite
         if isinstance(entity, Hunter):
             xoffset = 10
@@ -100,9 +102,25 @@ class GUI:
         self.screen.blit(sprite, self.calculate_coord(row, col, xoffset, yoffset))
         pygame.display.flip()
 
+    def draw_fov(self, agent):
+        fov = agent.look_fov(3)
+        color = agent.get_color() if isinstance(agent, Hunter) else "orange"
+        for pos in fov:
+            coord = self.calculate_coord(pos.row, pos.col)
+            if color == "red":
+                color = RED
+            elif color == "blue":
+                color = BLUE
+            elif color == "green":
+                color = GREEN
+            elif color == "yellow":
+                color = YELLOW
+            pygame.draw.rect(self.screen, color, [coord[0], coord[1],
+                             self.cell_width, self.cell_width])
+        pygame.display.flip()
+
     def displayEntities(self):
         pass
 
     def removeEntity(self, entity):
         pass
-

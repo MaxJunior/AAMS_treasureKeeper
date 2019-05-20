@@ -7,7 +7,7 @@ from .entity import Entity
 class Jailcell(Entity):
 
     def __init__(self, pos, board):
-        super().__init__(pos, board, "jailcell.png")
+        super().__init__(pos, board, "jailcell.png", f"jailcell{pos.row}{pos.col}")
         self.prisoner = None
 
     def set_prisoner(self, hunter):

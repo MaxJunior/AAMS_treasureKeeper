@@ -1,4 +1,5 @@
 import pygame
+import time
 
 from .position import Position
 
@@ -20,11 +21,25 @@ class Board:
         self.board = [[0 for _ in range(width)] for _ in range(width)]
         self.gui = gui
 
-        self.jailcells = [Jailcell(pos, self) for pos in JAIL_COORDS]
-        self.treasures = [Treasure(pos, self) for pos in TREASURE_COORDS]
-        self.keeper = Keeper(KEEPER_COORDS, self, TREASURE_COORDS, JAIL_COORDS)
-        self.hunters = [Hunter(id, pos, self)
+        self.jailcells = [Jailcell(Position(pos[0], pos[1]), self)
+                          for pos in JAIL_COORDS]
+        self.treasures = [Treasure(Position(pos[0], pos[1]), self)
+                          for pos in TREASURE_COORDS]
+        self.keeper = Keeper(Position(KEEPER_COORDS[0], KEEPER_COORDS[1]),
+                             self, TREASURE_COORDS, JAIL_COORDS)
+        self.hunters = [Hunter(id, Position(pos[0], pos[1]), self)
                         for id, pos in enumerate(HUNTER_COORDS)]
+
+        for jail in self.jailcells:
+            self.board[jail.pos.row][jail.pos.col] = jail
+
+        for treasure in self.treasures:
+            self.board[treasure.pos.row][treasure.pos.col] = treasure
+
+        for hunter in self.hunters:
+            self.board[hunter.pos.row][hunter.pos.col] = hunter
+
+        self.board[self.keeper.pos.row][self.keeper.pos.col] = self.keeper
 
     def get_content(self, pos):
         """ Returns the content of the 'pos' entry of the 'board' """
@@ -49,7 +64,7 @@ class Board:
 
     def position_is_free(self, pos):
         """Check if a board Position pos is occupied."""
-        return self.board[pos.row][pos.col] != 0
+        return self.board[pos.row][pos.col] == 0
 
     def entity_in_pos(self, pos, entity):
         """Check if Entity entity is in board Position pos."""
@@ -63,7 +78,10 @@ class Board:
         col = pos.col
 
         cell = self.board[row][col]
-        return isinstance(cell, Hunter)
+        if isinstance(cell, Hunter):
+            return cell
+        else:
+            return False
 
     def pos_occupied_keeper(self, pos):
         """Check if pos is occupied by the Keeper."""
@@ -73,26 +91,50 @@ class Board:
         cell = self.board[row][col]
         return cell == self.keeper
 
+    def pos_occupied_treasure(self, pos):
+        """Check if pos is occupied by a treasure."""
+        row = pos.row
+        col = pos.col
+
+        cell = self.board[row][col]
+        #print(pos, cell)
+        if isinstance(cell, Treasure):
+            return cell
+        else:
+            return False
+
+    def pos_occupied_jailcell(self, pos):
+        """Check if pos is occupied by a jailcell."""
+        row = pos.row
+        col = pos.col
+
+        cell = self.board[row][col]
+        if isinstance(cell, Jailcell):
+            return cell
+        else:
+            return False
+
     def set_agent_position(self, agent, new_pos):
         """Set the position of an Agent agent."""
         if self.position_is_valid(new_pos) and self.position_is_free(new_pos):
+            self.board[agent.pos.row][agent.pos.col] = 0
             agent.pos = new_pos
 
             new_row = new_pos.row
             new_col = new_pos.col
             self.board[new_row][new_col] = agent
         else:
-            raise Exception(f"Invalid position ({new_pos.row}, {new_pos.col}.")
+            raise Exception("Invalid position", new_pos)
 
     def adjacent_positions(self, pos):
         """Returns the adjacent positions (no diagonals)."""
-        t_row = treasure.pos.row
-        t_col = treasure.pos.col
+        row = pos.row
+        col = pos.col
 
-        aux = (Position(1, 0), Position(0, 1), (-1, 0), (0, -1))
-        adjacent = [Position(t_row + row, t_col + col) for (row, col) in aux
-                    if position_is_valid(Position(t_row + row, t_col + col))]
-
+        aux = (Position(1, 0), Position(0, 1),
+               Position(-1, 0), Position(0, -1))
+        adjacent = [pos + a_pos for a_pos in aux
+                    if self.position_is_valid(pos + a_pos)]
         return adjacent
 
     def board_create_deep_copy(self):
@@ -118,6 +160,7 @@ class Board:
         for pos in adjacent:
             if self.pos_occupied_hunter(pos):
                 count += 1
+        print("agents_treasure", count)
         return count
 
     """ TO FIXME :  """
@@ -181,7 +224,6 @@ class Board:
 
         if self.get_values_diff(pos1_col, pos2_col) == 0:
             return (self.get_values_diff(pos1_line, pos2_line), pos1_col)
-
 
     def board_perform_move(self, move):
         pass
@@ -251,27 +293,41 @@ class Board:
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     done = True
-            else:
-                self.step()
+                #elif event.type == pygame.KEYDOWN:
+            self.gui.displayBoard()
+            self.step()
+            self.displayEntities()
+            time.sleep(0.5)
 
     def displayEntities(self):
+        for entity in self.hunters:
+            self.gui.draw_fov(entity)
+        for entity in self.hunters:
+            self.gui.displayEntity(entity)
+
         for entity in self.treasures:
             self.gui.displayEntity(entity)
         for entity in self.jailcells:
             self.gui.displayEntity(entity)
-        for entity in self.hunters:
-            self.gui.displayEntity(entity)
         self.gui.displayEntity(self.keeper)
-    
+
     def removeEntities(self):
-        pass
-    
+        for entity in self.hunters:
+            self.gui.removeEntity(entity)
+        for entity in self.treasures:
+            self.gui.removeEntity(entity)
+        for entity in self.jailcells:
+            self.gui.removeEntity(entity)
+        
+        self.gui.removeEntity(self.keeper)
+
     def step(self):
-        pass
-    
+        for hunter in self.hunters:
+            print("################", hunter.name, "################")
+            hunter.execute("rGreedy")
+
     def stop(self):
         pass
-    
+
     def associateGUI(self, gui):
         self.gui = gui
-

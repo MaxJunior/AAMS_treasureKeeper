@@ -9,7 +9,7 @@ from ..globals import ASSETS_DIR, ChestStatus, EMPTY_BONUS
 class Treasure(Entity):
 
     def __init__(self, pos, board):
-        super().__init__(pos, board, "treasure_closed.png")
+        super().__init__(pos, board, "treasure_closed.png", f"treasure{pos.row}{pos.col}")
         self.gold = 10.0
         self.status = ChestStatus.CLOSED
 

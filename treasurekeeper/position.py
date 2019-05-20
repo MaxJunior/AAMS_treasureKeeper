@@ -9,3 +9,6 @@ class Position:
 
     def __eq__(self, other):
         return self.row == other.row and self.col == other.col
+
+    def __repr__(self):
+        return f"({self.row}, {self.col})"

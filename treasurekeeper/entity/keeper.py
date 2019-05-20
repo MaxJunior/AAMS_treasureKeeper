@@ -18,7 +18,7 @@ class Keeper(Agent):
          cellLocations  : locations where keeper can detains an hunter
 
         """
-        super().__init__(pos, board, "keeper", KEEPER_DESIRES, KEEPER_ACTIONS)
+        super().__init__(pos, board, "keeper", KEEPER_DESIRES, KEEPER_ACTIONS, "keeper")
         self.board = board
         self.pos = pos
         self.chestLocations = chestLocations
