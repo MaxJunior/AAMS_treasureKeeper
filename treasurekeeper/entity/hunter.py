@@ -35,6 +35,9 @@ class Hunter(Agent):
         self.hunter_positions = []
         self.status = HunterStatus.ALIVE
         self.danger = 0
+        self.walk_choice = 0
+        self.fleeing = 0  # 0-normal, 1-rotated once, 2-rotated twice
+        self.flee_plan = deque()
 
     def updateHuntersPositions(self, huntersPos):
         """set the current positions of the hunter in the board """
@@ -108,9 +111,17 @@ class Hunter(Agent):
 
     def find_flee_pos(self):
         """Find a safe position to flee to."""
-        fov = self.look_fov(3)
-        # fov has farther positions at the end of the list
-        return fov[-1]
+        behind = self.pos_behind()
+        if behind:
+            self.flee_plan = deque([(HUNTER_ACTIONS["rotate_right"], None), (HUNTER_ACTIONS["rotate_right"], None),
+                                   (HUNTER_ACTIONS["move_forward"], None)])
+        else:
+            fov = self.look_fov()
+            for pos in look_fov:
+                if self.board.position_is_free(pos):
+                    self.flee_plan = deque([(action, None) for action in
+                                           self.buildPathPlan(flee_pos)])
+
 
     def treasure_in_fov(self, depth, other_dir=None):
         """Check if there's a treasure in the hunter's fov."""
@@ -207,16 +218,16 @@ class Hunter(Agent):
                 # facing the wall with no plan, rotate!
                 res.append((self.random_rotate(), None))
                 return res
-
+            """
             self.check_danger()
-            if self.danger == 2:
+            if self.danger >= 2:
                 print("Run away!")
                 # run away! the keeper is near!
-                flee_pos = self.find_flee_pos()
-                print(flee_pos)
-                return [(action, None) for action in
-                        self.buildPathPlan(flee_pos)]
-
+                if len(self.flee_plan) == 0:
+                    self.find_flee_pos()
+                print(self.flee_plan)
+                return [self.flee_plan.popleft()]
+            """
             t_ahead = self.treasure_ahead()
             #print("treasure_ahead ->", t_ahead)
             if t_ahead and t_ahead.status != ChestStatus.EMPTY:
@@ -244,15 +255,16 @@ class Hunter(Agent):
                             in self.buildPathPlan(pos)]
 
             # if there isn't, move randomly
-            print("Going randomly")
             random_dir = random.choice(DIRECTIONS)
+            ahead = self.ahead_position()
+            if not ahead or not self.board.position_is_free(ahead) or self.walk_choice == 2:
+                print("Random rotate.")
+                action = self.random_rotate()
+                self.walk_choice = 0
+            else:
+                print("Walk forward")
+                action = HUNTER_ACTIONS["move_forward"]
 
-            free_pos = False
-            while not free_pos:
-                random_pos = random.choice(self.look_fov(3, random_dir))
-                free_pos = self.board.position_is_free(random_pos)
-
-            return [(action, None) for action in
-                    self.buildPathPlan(random_pos)]
+            return [(action, None)]
 
         return res

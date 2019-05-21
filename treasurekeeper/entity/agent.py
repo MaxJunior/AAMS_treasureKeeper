@@ -90,6 +90,30 @@ class Agent(Entity):
             return False
         else:
             return res
+    
+    def pos_behind(self, from_pos=None, other_dir=None):
+        if other_dir is not None:
+            dir_ = other_dir
+        else:
+            dir_ = self.direction
+
+        if from_pos is not None:
+            pos = from_pos
+        else:
+            pos = self.pos
+        
+        if dir_ == "d":
+            res = pos + Position(-1, 0)
+        elif dir_ == "l":
+            res = pos + Position(0, 1)
+        elif dir_ == "u":
+            res = pos + Position(1, 0)
+        else:  # dir_ == "r":
+            res = pos + Position(0, -1)
+        if not self.board.position_is_valid(res):
+            return False
+        else:
+            return res
 
     def move_forward(self):
         """Move to position ahead of the agent."""
@@ -103,11 +127,15 @@ class Agent(Entity):
 
     def look_fov(self, depth, other_dir=None):
         """Look in a cone (FOV) in front of the agent."""
-        seed = self.ahead_position()
-        pos_fov = self.board.adjacent_positions(self.pos)
-        if not seed:
+        seed = self.pos
+        pos_fov = []
+        for pos in self.board.adjacent_positions(self.pos):
+            if self.pos_behind():
+                if not (pos == self.pos_behind()):
+                    pos_fov.append(pos)
+        if not self.ahead_position():
             return pos_fov
-        pos_fov.append(seed)
+        #pos_fov.append(seed)
 
         if other_dir is not None:
             dir_ = other_dir
@@ -180,7 +208,7 @@ class Agent(Entity):
         """Calculate sequence of actions to reach a certain position."""
         path = self.find_path(pos)
         actions = deque()
-        print("Goal ->", pos.row, pos.col)
+        #print("Goal ->", pos.row, pos.col)
         for node in path[1:]:
             pass  # print(node.state.row, node.state.col)
 
