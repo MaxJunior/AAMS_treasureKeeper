@@ -21,3 +21,4 @@ EXPL_COLORS = ["blue", "green", "red", "yellow"]
 
 COLLECT_AMOUNTS = [1, 0.7, 0.4, 0.15]
 EMPTY_BONUS = 0.5
+STEP_TIME = 0.1

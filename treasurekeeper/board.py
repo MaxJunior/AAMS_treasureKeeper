@@ -2,7 +2,7 @@ import pygame
 import time
 
 from .position import Position
-
+from .globals import HunterStatus, STEP_TIME
 from .entity.jailcell import Jailcell
 from .entity.treasure import Treasure
 from .entity.keeper import Keeper
@@ -26,7 +26,9 @@ class Board:
         self.treasures = [Treasure(Position(pos[0], pos[1]), self)
                           for pos in TREASURE_COORDS]
         self.keeper = Keeper(Position(KEEPER_COORDS[0], KEEPER_COORDS[1]),
-                             self, TREASURE_COORDS, JAIL_COORDS)
+                             self,
+                             TREASURE_COORDS,
+                             [Position(j[0], j[1]) for j in JAIL_COORDS])
         self.hunters = [Hunter(id, Position(pos[0], pos[1]), self)
                         for id, pos in enumerate(HUNTER_COORDS)]
 
@@ -114,15 +116,17 @@ class Board:
         else:
             return False
 
-    def set_agent_position(self, agent, new_pos):
+    def set_agent_position(self, agent, new_pos, grab_flag=False):
         """Set the position of an Agent agent."""
-        if self.position_is_valid(new_pos) and self.position_is_free(new_pos):
+
+        if (self.position_is_valid(new_pos) and self.position_is_free(new_pos)) or grab_flag:
             self.board[agent.pos.row][agent.pos.col] = 0
             agent.pos = new_pos
 
             new_row = new_pos.row
             new_col = new_pos.col
-            self.board[new_row][new_col] = agent
+            if not grab_flag:
+                self.board[new_row][new_col] = agent
         else:
             raise Exception("Invalid position", new_pos)
 
@@ -297,13 +301,14 @@ class Board:
             self.gui.displayBoard()
             self.step()
             self.displayEntities()
-            time.sleep(0.5)
+            time.sleep(STEP_TIME)
 
     def displayEntities(self):
         for entity in self.hunters:
             self.gui.draw_fov(entity)
         for entity in self.hunters:
-            self.gui.displayEntity(entity)
+            if entity.status == HunterStatus.ALIVE:
+                self.gui.displayEntity(entity)
 
         for entity in self.treasures:
             self.gui.displayEntity(entity)
@@ -322,9 +327,12 @@ class Board:
         self.gui.removeEntity(self.keeper)
 
     def step(self):
+        print("############### KEEPER ################")
+        self.keeper.execute()
         for hunter in self.hunters:
             print("################", hunter.name, "################")
             hunter.execute("rGreedy")
+        
 
     def stop(self):
         pass

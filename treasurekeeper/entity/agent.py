@@ -115,15 +115,6 @@ class Agent(Entity):
         else:
             return res
 
-    def move_forward(self):
-        """Move to position ahead of the agent."""
-        ahead = self.ahead_position()
-        print("move", ahead)
-        if ahead:
-            self.board.set_agent_position(self, ahead)
-            return True
-        else:
-            return False
 
     def look_fov(self, depth, other_dir=None):
         """Look in a cone (FOV) in front of the agent."""
@@ -206,9 +197,10 @@ class Agent(Entity):
 
     def buildPathPlan(self, pos):
         """Calculate sequence of actions to reach a certain position."""
+        print(pos)
         path = self.find_path(pos)
         actions = deque()
-        #print("Goal ->", pos.row, pos.col)
+        print("Goal ->", pos.row, pos.col)
         for node in path[1:]:
             pass  # print(node.state.row, node.state.col)
 

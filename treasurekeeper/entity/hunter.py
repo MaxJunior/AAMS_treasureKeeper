@@ -42,6 +42,16 @@ class Hunter(Agent):
     def updateHuntersPositions(self, huntersPos):
         """set the current positions of the hunter in the board """
         self.huntersPositions = huntersPos
+        
+    def move_forward(self):
+        """Move to position ahead of the agent."""
+        ahead = self.ahead_position()
+        print("move", ahead)
+        if ahead or self.status == HunterStatus.GRABBED:
+            self.board.set_agent_position(self, ahead)
+            return True
+        else:
+            return False
 
     def set_status(self, status):
         """Set the hunter's status."""
@@ -49,10 +59,10 @@ class Hunter(Agent):
 
     def update_times_locked(self):
         """Update the times the hunter has been locked."""
-        if self.timesLocked == 0:
-            self.timesLocked = 1
-        elif self.timesLocked == 1:
-            self.timesLocked = 2
+        if self.times_locked == 0:
+            self.times_locked = 1
+        elif self.times_locked == 1:
+            self.times_locked = 2
             self.set_status(HunterStatus.DEAD)
         else:
             raise Exception(f"Invalid lock on hunter {self.id}.")

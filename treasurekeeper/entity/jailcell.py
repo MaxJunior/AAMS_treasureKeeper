@@ -2,6 +2,7 @@ import pygame
 import os
 
 from .entity import Entity
+from ..globals import EXPL_COLORS
 
 
 class Jailcell(Entity):

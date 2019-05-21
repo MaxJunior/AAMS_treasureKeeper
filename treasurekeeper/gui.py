@@ -5,7 +5,7 @@ from .board import Board
 from .entity.hunter import Hunter
 from .entity.treasure import Treasure
 
-from .globals import GAME_TITLE, ASSETS_DIR
+from .globals import GAME_TITLE, ASSETS_DIR, HunterStatus
 
 # This sets the margin between each cell
 MARGIN = 3
@@ -103,6 +103,9 @@ class GUI:
         pygame.display.flip()
 
     def draw_fov(self, agent):
+        if isinstance(agent, Hunter):
+            if agent.status != HunterStatus.ALIVE:
+                return
         fov = agent.look_fov(3)
         color = agent.get_color() if isinstance(agent, Hunter) else "orange"
         for pos in fov:
